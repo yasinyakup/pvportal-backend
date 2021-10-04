@@ -1,20 +1,24 @@
 package com.kalyon.pvportalbackend.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Users {
 
     @Id
-    private Integer id;
+    @GeneratedValue
+    private UUID id;
 
     private String firstName;
 
@@ -34,10 +38,11 @@ public class Users {
 
     private boolean isEnabled;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Set<Role> roles = new HashSet<>();
 }
